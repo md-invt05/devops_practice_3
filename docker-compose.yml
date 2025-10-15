@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  service-a:
+    build: ./service-a
+    container_name: service-a
+    environment:
+      - STUDENT_NAME=Degtyarev
+      - STUDENT_GROUP=EFBO-02-23
+    ports:
+      - "5000:5000"
+
+  service-b:
+    build: ./service-b
+    container_name: service-b
+    environment:
+      - SERVICE_A_URL=http://service-a:5000/payload
+      # - PROJECT_URL=http://host.docker.internal:8080/api/sink
+    depends_on:
+      - service-a
+    ports:
+      - "5001:5001"
