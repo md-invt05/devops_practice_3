@@ -1,0 +1,44 @@
+# Деплой: docker stack deploy -c docker-stack.yml microstack
+# ВАЖНО: Swarm не делает build, образы должны быть уже собраны и затеганы.
+
+services:
+  service-a:
+    image: microdemo/service-a:latest
+    environment:
+      - STUDENT_NAME=Degtyarev
+      - STUDENT_GROUP=EFBO-02-23
+    networks: [app-net]
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  service-b:
+    image: microdemo/service-b:latest
+    environment:
+      - SERVICE_A_URL=http://service-a:5000/payload
+      # - PROJECT_URL=http://host.docker.internal:8080/api/sink
+    networks: [app-net]
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+    networks: [app-net]
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  app-net:
+    driver: overlay

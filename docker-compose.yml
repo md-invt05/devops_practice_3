@@ -1,6 +1,6 @@
-version: "3.9"
 services:
   service-a:
+    image: microdemo/service-a:latest     # <— ДОБАВЬ ЭТУ СТРОКУ
     build: ./service-a
     container_name: service-a
     environment:
@@ -10,6 +10,7 @@ services:
       - "5000:5000"
 
   service-b:
+    image: microdemo/service-b:latest     # <— ДОБАВЬ ЭТУ СТРОКУ
     build: ./service-b
     container_name: service-b
     environment:
